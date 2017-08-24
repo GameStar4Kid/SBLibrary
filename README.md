@@ -19,6 +19,7 @@ it, simply add the following line to your Podfile:
 ```ruby
 pod 'SBLibrary' , :git => 'https://github.com/GameStar4Kid/SBLibrary.git'
 ```
+Copy Example/Assets to your project
 
 ## Author
 
