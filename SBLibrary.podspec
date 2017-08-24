@@ -37,7 +37,7 @@ s.resource_bundles = {
 }
 #s.public_header_files = 'Pod/Classes/**/*.h'
 s.frameworks = 'UIKit'
-s.dependency 'AFNetworking', '~> 2.3'
+s.dependency 'AFNetworking'
 s.dependency 'Masonry'
-s.dependency 'MBProgressHUD', '~> 1.0.0'
+s.dependency 'MBProgressHUD'
 end
