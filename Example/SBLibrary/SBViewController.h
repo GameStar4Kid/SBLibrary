@@ -2,8 +2,8 @@
 //  SBViewController.h
 //  SBLibrary
 //
-//  Created by doianhkhoviai@me.com on 08/24/2017.
-//  Copyright (c) 2017 doianhkhoviai@me.com. All rights reserved.
+//  Created by NguyenTran on 08/24/2017.
+//  Copyright (c) 2017 NguyenTran. All rights reserved.
 //
 
 @import UIKit;

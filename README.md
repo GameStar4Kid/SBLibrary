@@ -1,6 +1,6 @@
 # SBLibrary
 
-[![CI Status](http://img.shields.io/travis/doianhkhoviai@me.com/SBLibrary.svg?style=flat)](https://travis-ci.org/doianhkhoviai@me.com/SBLibrary)
+[![CI Status](http://img.shields.io/travis/NguyenTran/SBLibrary.svg?style=flat)](https://travis-ci.org/NguyenTran/SBLibrary)
 [![Version](https://img.shields.io/cocoapods/v/SBLibrary.svg?style=flat)](http://cocoapods.org/pods/SBLibrary)
 [![License](https://img.shields.io/cocoapods/l/SBLibrary.svg?style=flat)](http://cocoapods.org/pods/SBLibrary)
 [![Platform](https://img.shields.io/cocoapods/p/SBLibrary.svg?style=flat)](http://cocoapods.org/pods/SBLibrary)
@@ -22,7 +22,7 @@ pod "SBLibrary"
 
 ## Author
 
-doianhkhoviai@me.com, binh_t@mti.co.jp
+Nguyen Tran - harryjury@gmail.com
 
 ## License
 
