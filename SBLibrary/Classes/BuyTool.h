@@ -43,9 +43,13 @@ typedef void(^AfterVerify)(NSInteger status);
 - (void) verifyReceipt: (UIViewController *) controller after:(AfterVerify)after;
 
 - (void) showSubscriptionScreen:(UIViewController *) controller;
+
++ (NSString *) getCongfigInFile: (NSString *)key;
 @end
 
 //沙盒测试环境验证
 #define Env_Sandbox @"https://sandbox.itunes.apple.com/verifyReceipt"
 //正式环境验证
 #define Env_AppStore @"https://buy.itunes.apple.com/verifyReceipt"
+
+#define FINISH_PURCHAED_RESTORED @"FINISH_PURCHAED_RESTORED"

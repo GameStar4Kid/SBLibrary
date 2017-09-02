@@ -10,6 +10,9 @@
 #import "View+MASAdditions.h"
 #import "WebController.h"
 #import "BuyTool.h"
+#import "UserData.h"
+#import "AlertTool.h"
+#define isiPhone5  ([[UIScreen mainScreen] bounds].size.height == 568)?TRUE:FALSE
 @interface SubscriptionCtrl ()
 
 @end
@@ -20,6 +23,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self initView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishPurchasedRestore) name:FINISH_PURCHAED_RESTORED object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -41,8 +45,11 @@
     CGFloat multiple = 1;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         multiple = 1.3;
-    } else {
+    } else if(isiPhone5) {
         multiple = 1;
+    } else
+    {
+        multiple = 0.8;
     }
     self.view.backgroundColor = [UIColor colorWithRed:90/255.0 green:190/255.0 blue:240/255.0 alpha:1];
     //设置按钮setting
@@ -53,10 +60,10 @@
     [self.view addSubview:setImgView];
     [setImgView mas_makeConstraints:^(MASConstraintMaker *make) {
         //make.centerX.equalTo(self.view.mas_centerX);
-        make.top.equalTo(@(35));
-        make.right.equalTo(@(-20));
-        make.width.equalTo(@(25));
-        make.height.equalTo(@(25));
+        make.top.equalTo(@(35*multiple));
+        make.right.equalTo(@(-20*multiple));
+        make.width.equalTo(@(25*multiple));
+        make.height.equalTo(@(25*multiple));
     }];
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeAction:)];
     [setImgView addGestureRecognizer:singleTap];
@@ -70,9 +77,9 @@
     [self.view addSubview:title];
     [title mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.view.mas_centerX);
-        make.top.equalTo(@(50));
-        make.width.equalTo(@(320));
-        make.height.equalTo(@(40));
+        make.top.equalTo(@(50*multiple));
+        make.width.equalTo(@(320*multiple));
+        make.height.equalTo(@(40*multiple));
     }];
     
     UILabel* subTitle = [[UILabel alloc] init];
@@ -99,8 +106,8 @@
         [buyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self.view.mas_centerX);
             make.top.equalTo(subTitle.mas_bottom).offset(5*multiple);
-            make.width.equalTo(@(300));
-            make.height.equalTo(@(50));
+            make.width.equalTo(@(300*multiple));
+            make.height.equalTo(@(50*multiple));
         }];
         buyBtn.backgroundColor = [UIColor colorWithRed:220/255.0 green:100/255.0 blue:50/255.0 alpha:1];
         SubscriptionData* data = [[BuyTool sharedInstance] getProducts][index];
@@ -119,8 +126,8 @@
         [buyBtn2 mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self.view.mas_centerX);
             make.top.equalTo(buyBtn.mas_bottom).offset(5*multiple);
-            make.width.equalTo(@(300));
-            make.height.equalTo(@(50));
+            make.width.equalTo(@(300*multiple));
+            make.height.equalTo(@(50*multiple));
         }];
         buyBtn2.backgroundColor = [UIColor colorWithRed:0/255.0 green:187/255.0 blue:156/255.0 alpha:1];
         NSLog(@"price = %@",data.amountDisplay);
@@ -139,8 +146,8 @@
         [buyBtn3 mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self.view.mas_centerX);
             make.top.equalTo(buyBtn2.mas_bottom).offset(5*multiple);
-            make.width.equalTo(@(300));
-            make.height.equalTo(@(50));
+            make.width.equalTo(@(300*multiple));
+            make.height.equalTo(@(50*multiple));
         }];
         
         buyBtn3.backgroundColor = [UIColor colorWithRed:0/255.0 green:187/255.0 blue:156/255.0 alpha:1];
@@ -160,8 +167,8 @@
         [buyBtn4 mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self.view.mas_centerX);
             make.top.equalTo(buyBtn3.mas_bottom).offset(5*multiple);
-            make.width.equalTo(@(300));
-            make.height.equalTo(@(50));
+            make.width.equalTo(@(300*multiple));
+            make.height.equalTo(@(50*multiple));
         }];
         buyBtn4.backgroundColor = [UIColor colorWithRed:0/255.0 green:187/255.0 blue:156/255.0 alpha:1];
         NSLog(@"price = %@",data.amountDisplay);
@@ -171,21 +178,27 @@
     }
     
     
+    NSString* iapDesc = [BuyTool getCongfigInFile:@"iap_desc"];
+    if(iapDesc.length>0)
+    {
+        iapDesc = [iapDesc stringByReplacingOccurrencesOfString:@"\\n" withString:@"\n"];
+        UILabel* cancelTitle = [[UILabel alloc] init];
+        cancelTitle.font = [UIFont systemFontOfSize:13];
+        cancelTitle.numberOfLines = 3;
+        cancelTitle.text = iapDesc;
+//        cancelTitle.text = @"* Record high-quality video\n* Unlimited Support \nYou can cancel anytime";
+        cancelTitle.textAlignment = NSTextAlignmentCenter;
+        [self.view addSubview:cancelTitle];
+        [cancelTitle mas_makeConstraints:^(MASConstraintMaker *make) {
+            //        make.centerX.equalTo(logoImageView.mas_centerX);
+            //        make.centerY.equalTo(logoImageView.mas_centerY);
+            make.top.equalTo(lastBtn.mas_bottom).offset(5*multiple);
+            make.centerX.equalTo(self.view.mas_centerX);
+            make.width.equalTo(@(320*multiple));
+            make.height.equalTo(@(60*multiple));
+        }];
+    }
     
-    
-    UILabel* cancelTitle = [[UILabel alloc] init];
-    cancelTitle.font = [UIFont systemFontOfSize:13];
-    cancelTitle.text = @"You can cancel anytime";
-    cancelTitle.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:cancelTitle];
-    [cancelTitle mas_makeConstraints:^(MASConstraintMaker *make) {
-        //        make.centerX.equalTo(logoImageView.mas_centerX);
-        //        make.centerY.equalTo(logoImageView.mas_centerY);
-        make.top.equalTo(lastBtn.mas_bottom).offset(5*multiple);
-        make.centerX.equalTo(self.view.mas_centerX);
-        make.width.equalTo(@(320*multiple));
-        make.height.equalTo(@(20*multiple));
-    }];
     
     //footer
     
@@ -193,9 +206,9 @@
     [self.view addSubview:btnRestore];
     [btnRestore mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.view.mas_centerX);
-        make.bottom.equalTo(@(-80));
-        make.width.equalTo(@(250));
-        make.height.equalTo(@(50));
+        make.bottom.equalTo(@(-80*multiple));
+        make.width.equalTo(@(250*multiple));
+        make.height.equalTo(@(50*multiple));
     }];
     btnRestore.backgroundColor = [UIColor colorWithRed:250/255.0 green:150/255.0 blue:100/255.0 alpha:1];
     //    btnRestore.layer.cornerRadius = 8;
@@ -210,7 +223,7 @@
         make.centerX.equalTo(self.view.mas_centerX);
         make.top.equalTo(btnRestore.mas_bottom).offset(5*multiple);
         make.width.equalTo(@(300));
-        make.height.equalTo(@(20));
+        make.height.equalTo(@(20*multiple));
     }];
     [btnContinue setTitle:@"No, I want to continue with the limited version" forState:UIControlStateNormal];
     [btnContinue setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -221,10 +234,10 @@
     btnPrivacy.titleLabel.textAlignment = NSTextAlignmentRight;
     [self.view addSubview:btnPrivacy];
     [btnPrivacy mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(@(30));
+        make.left.equalTo(@(30*multiple));
         make.top.equalTo(btnContinue.mas_bottom).offset(5*multiple);
-        make.width.equalTo(@(140));
-        make.height.equalTo(@(20));
+        make.width.equalTo(@(140*multiple));
+        make.height.equalTo(@(20*multiple));
     }];
     [btnPrivacy setTitle:@"Privacy Policy" forState:UIControlStateNormal];
     [btnPrivacy setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -235,10 +248,10 @@
     btnTOS.titleLabel.textAlignment = NSTextAlignmentLeft;
     [self.view addSubview:btnTOS];
     [btnTOS mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(@(-30));
+        make.right.equalTo(@(-30*multiple));
         make.top.equalTo(btnContinue.mas_bottom).offset(5*multiple);
         make.width.equalTo(@(140));
-        make.height.equalTo(@(20));
+        make.height.equalTo(@(20*multiple));
     }];
     [btnTOS setTitle:@"About Subscriptions" forState:UIControlStateNormal];
     [btnTOS setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -316,5 +329,30 @@
         [str appendString:@"Free Trial (3 days)"];
     }
     return str;
+}
+- (void)finishPurchasedRestore
+{
+    if ([[UserData sharedInstance] isVip])
+    {
+        [self dismissViewControllerAnimated:NO completion:nil];
+    }
+    else
+    {
+        [[BuyTool sharedInstance] verifyReceipt:self after:^(NSInteger status) {
+            if (status == 0) {
+                if ([[UserData sharedInstance] isVip]){
+                    [self dismissViewControllerAnimated:NO completion:nil];
+                }
+                else{
+                    
+                    [AlertTool showGoitTip:self title:@"Your subscription expired." message:@"If you have renewed your subscription, please try to relaunch our app." aftrt:^{}];
+                }
+            }
+            else{
+                
+            }
+        }];
+
+    }
 }
 @end

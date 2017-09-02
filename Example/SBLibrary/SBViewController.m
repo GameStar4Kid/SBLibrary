@@ -8,6 +8,7 @@
 
 #import "SBViewController.h"
 #import <SBLibrary/BuyTool.h>
+#import <SBLibrary/UserData.h>
 @interface SBViewController ()
 
 @end
@@ -22,7 +23,13 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [[BuyTool sharedInstance] showSubscriptionScreen:self];
+    if(![UserData sharedInstance].isVip){
+        [[BuyTool sharedInstance] showSubscriptionScreen:self];
+    }
+    else
+    {
+        NSLog(@"is Vip");
+    }
 }
 - (void)didReceiveMemoryWarning
 {

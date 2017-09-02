@@ -72,7 +72,7 @@ static BuyTool *instance = nil;
     else
     {
         [MBProgressHUD hideHUDForView:controller.view animated:YES];
-        [AlertTool showGoitTip:controller title:NSLocalizedString(@"ShopNotSupport", nil) aftrt:nil];
+        [AlertTool showGoitTip:controller title:@"You do not open the program to pay for the purchase." aftrt:nil];
     }
 }
 
@@ -193,22 +193,28 @@ static BuyTool *instance = nil;
                 [[UserData sharedInstance] tried];
                 [MBProgressHUD hideHUDForView:_controller.view animated:YES];
                 [queue finishTransaction:tran];
+                NSLog(@"purchased");
+                [[NSNotificationCenter defaultCenter] postNotificationName:FINISH_PURCHAED_RESTORED object:nil];
                 break;
             }
             case SKPaymentTransactionStatePurchasing:
             {
-                NSLog(@"payment in quque");
+                NSLog(@"payment in queue");
                 break;
             }
             case SKPaymentTransactionStateRestored:
             {
                 [queue finishTransaction:tran];
+                NSLog(@"restored");
+                [[NSNotificationCenter defaultCenter] postNotificationName:FINISH_PURCHAED_RESTORED object:nil];
                 break;
             }
             case SKPaymentTransactionStateFailed:
             {
                 [queue finishTransaction:tran];
                 [MBProgressHUD hideHUDForView:_controller.view animated:YES];
+                NSLog(@"purchased failed");
+                [[NSNotificationCenter defaultCenter] postNotificationName:FINISH_PURCHAED_RESTORED object:nil];
                 break;
             }
             default:
@@ -231,7 +237,7 @@ static BuyTool *instance = nil;
         [AlertTool showGoitTip:_controller title:NSLocalizedString(@"NetworkError", nil) aftrt:^{}];
     }
     else if([request isKindOfClass:[SKReceiptRefreshRequest class]]){
-        [AlertTool showGoitTip:_controller title:NSLocalizedString(@"UpdateSubscriptionsError", nil) aftrt:^{
+        [AlertTool showGoitTip:_controller title:@"Subscription update failed. Please try again later." aftrt:^{
             [self afterVerifyReceipt:-1];
         }];
     }
@@ -259,6 +265,7 @@ static BuyTool *instance = nil;
 }
 
 - (void) verifyReceipt: (UIViewController *) controller after:(AfterVerify)after{
+    NSLog(@"start verifyReceipt");
     _afterVerify = after;
     _controller = controller;
     [self requestVerifyReceipt:Env_AppStore];
@@ -283,7 +290,7 @@ static BuyTool *instance = nil;
     
     [NSURLConnection sendAsynchronousRequest:storeRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         if (connectionError) {
-            [AlertTool showGoitTip:_controller title:NSLocalizedString(@"NetworkError", nil) aftrt:^{
+            [AlertTool showGoitTip:_controller title:@"Network connection failure" aftrt:^{
                 [self afterVerifyReceipt:-1];
             }];
         } else {
@@ -298,14 +305,14 @@ static BuyTool *instance = nil;
                         [self requestVerifyReceipt:Env_Sandbox];
                          break;
                     default:
-                        [AlertTool showGoitTip:_controller title:NSLocalizedString(@"UpdateSubscriptionsError", nil) aftrt:^{
+                        [AlertTool showGoitTip:_controller title:@"Subscription update failed. Please try again later." aftrt:^{
                             [self afterVerifyReceipt:-1];
                         }];
                         break;
                 }
             }
             else{
-                [AlertTool showGoitTip:_controller title:NSLocalizedString(@"NetworkError", nil) aftrt:^{
+                [AlertTool showGoitTip:_controller title:@"Network connection failure" aftrt:^{
                     [self afterVerifyReceipt:-1];
                 }];
             }
@@ -349,6 +356,7 @@ static BuyTool *instance = nil;
         _afterVerify(status);
         _afterVerify = nil;
     }
+    NSLog(@"afterVerifyReceipt = %d",status);
 }
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
@@ -356,19 +364,20 @@ static BuyTool *instance = nil;
     [self verifyReceipt:_controller after:^(NSInteger status) {
         [MBProgressHUD hideHUDForView:_controller.view animated:YES];
         
-        [AlertTool showGoitTip:_controller title:NSLocalizedString(@"RestoreSuccess", nil) aftrt:nil];
+//        [AlertTool showGoitTip:_controller title:@"Restore success." aftrt:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:FINISH_PURCHAED_RESTORED object:nil];
     }];
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
 {
     [MBProgressHUD hideHUDForView:_controller.view animated:YES];
-    [AlertTool showGoitTip:_controller title:NSLocalizedString(@"RestoreError", nil) aftrt:nil];
+    [AlertTool showGoitTip:_controller title:@"Restore failed." aftrt:nil];
 }
 
 - (void) showTransactionError{
     if (_controller) {
-        [AlertTool showGoitTip:_controller title:NSLocalizedString(@"TransactionError", nil) aftrt:nil];
+        [AlertTool showGoitTip:_controller title:@"Transaction failure." aftrt:nil];
     }
 }
 
@@ -407,7 +416,7 @@ static BuyTool *instance = nil;
     return  localConfigData[key];
 }
 
-- (void) showSubscriptionScreen:(UIViewController *) controller;
+- (void) showSubscriptionScreen:(UIViewController *) controller
 {
     if([UserData sharedInstance].isVip) return;
     if ([[BuyTool sharedInstance] getProductsCount] == 0 && ![[BuyTool sharedInstance] isLoadingProducts]) {
