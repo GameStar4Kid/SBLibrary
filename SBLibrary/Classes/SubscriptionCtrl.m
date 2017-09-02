@@ -55,7 +55,7 @@
     //设置按钮setting
     UIImageView *setImgView = [[UIImageView alloc]init];
     //setImgView.frame = CGRectMake(SWidth-35, 25, 25, 25);
-    setImgView.image = [UIImage imageNamed:@"iap-close"];
+    setImgView.image = [UIImage imageNamed:@"iap-close1"];
     setImgView.userInteractionEnabled = YES;
     [self.view addSubview:setImgView];
     [setImgView mas_makeConstraints:^(MASConstraintMaker *make) {
