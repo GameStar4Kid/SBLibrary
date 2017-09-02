@@ -302,7 +302,7 @@
     NSMutableString* str = [NSMutableString stringWithCapacity:0];
     if(data.tenorMonth==1)
     {
-        [str appendString:@"MONTHLY"];
+        [str appendString:@"Free Trial (3 days)"];
         [str appendFormat:@" (%@)",data.amountDisplay];
     }
     else if(data.tenorMonth==3)
@@ -326,7 +326,8 @@
     }
     else if(data.tenorMonth==2)
     {
-        [str appendString:@"Free Trial (3 days)"];
+        [str appendString:@"6 MONTHS"];
+        [str appendFormat:@" (%@)",data.amountDisplay];
     }
     return str;
 }
