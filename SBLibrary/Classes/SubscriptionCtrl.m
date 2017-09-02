@@ -303,7 +303,7 @@
     if(data.tenorMonth==1)
     {
         [str appendString:@"Free Trial (3 days)"];
-        [str appendFormat:@" (%@)",data.amountDisplay];
+//        [str appendFormat:@" (%@)",data.amountDisplay];
     }
     else if(data.tenorMonth==3)
     {
